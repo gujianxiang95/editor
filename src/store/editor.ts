@@ -3,10 +3,10 @@ import { TextComponentProps } from "./defaultProps";
 import { RootProps } from "./index"
 export interface EditProps {
     components: ComponentData[];
-    currentElement: string;
+    currentElement: string;  // 保存当前项目的一些信息
 }
 // [key: string] key任意键值对
-interface ComponentData {
+export interface ComponentData {
     props: {
         [key: string]: any
     }
@@ -25,15 +25,38 @@ const EditorState: Module<EditProps, RootProps> = {
         components: testComponents,
         currentElement: ''
     },
+    getters: {
+        getCurrentElement: (state)=>{
+            return state.components.find(component=>{
+                return component.id === state.currentElement
+            })
+        }
+    },
     mutations: {
+        // 新增 el
         addComponent(state, props: Partial<TextComponentProps>){
             const newComponent: ComponentData = {
-                id: '5',
+                id: (state.components.length + 1 ) +'',
                 name: 'l-text',
                 props
             }
+            // console.log('newComponent', newComponent)
             state.components.push(newComponent)
         },
+        // 选中当前el id
+        setActive(state, currentId: string){
+            state.currentElement = currentId
+        },
+        // 更新元素
+        updateComponent(state, {key, value }) {
+            const updateComponent = state.components.find(item=>{
+                return item.id === state.currentElement
+            })
+            if( updateComponent ){
+                updateComponent.props[key as keyof TextComponentProps] = value
+            }
+        },
+
     }
 }
 

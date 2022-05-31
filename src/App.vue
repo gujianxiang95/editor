@@ -72,6 +72,7 @@ export default defineComponent({
     position: fixed;
     bottom: 0;
     width: 100%;
+    background: #FFF;
   }
   .layout-content {
     min-height: calc(100vh - 64px);

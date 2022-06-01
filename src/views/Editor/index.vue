@@ -73,6 +73,7 @@ export default defineComponent({
       store.commit("addComponent", props);
     };
     const handlechange = (e: any)=>{
+      console.log('e', e)
       store.commit('updateComponent', e)
     }
     return {

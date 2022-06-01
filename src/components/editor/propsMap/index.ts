@@ -1,12 +1,13 @@
 import { TextComponentProps } from "@/store/defaultProps";
+import { h, VNode } from "vue";
 export interface ProptoFrom {
     component: string;
     subComponent?: string;
     extraProps?: { [k: string]: any };
     text?: string;
     options?: {
-        text: string,
-        value: any
+        text: string | VNode;
+        value: any;
     }[];
     valueProp?: string; 
     eventName?: string; // 事件名
@@ -20,7 +21,19 @@ export type PropToFroms = {
     [P in keyof TextComponentProps]?: ProptoFrom
 }
 
-
+const fontFamilyArr = [
+    { text: '宋体', value: '"SimSun","STSong"' },
+    { text: '黑体', value: '"SimHei","STHeiti"' },
+    { text: '楷体', value: '"KaiTi","STKaiti"' },
+    { text: '仿宋', value: '"FangSong","STFangsong"' },
+]
+const fontFamilyOpts = fontFamilyArr.map(font=>{
+    return {
+        value: font.value,
+        text: h('span', {style: {fontFamily : font.value}}, font.text)
+        // text: <span style={{fontFamily : font.value}} >font.text</span> as VNode
+    }
+})
 export const mapPropsToFroms: PropToFroms = {
     text: {
         text: '文本',
@@ -52,16 +65,15 @@ export const mapPropsToFroms: PropToFroms = {
             { value: 'center', text: '中' },
             { value: 'right', text: '右' }
         ],
+        afterTransform: (e: any) => e.target.value,
     },
     fontFamily: {
         component: 'a-select',
         subComponent: 'a-select-option',
         text: '字体',
         options: [
-            { text: '宋体', value: '"SimSun","STSong"' },
-            { text: '黑体', value: '"SimHei","STHeiti"' },
-            { text: '楷体', value: '"KaiTi","STKaiti"' },
-            { text: '仿宋', value: '"FangSong","STFangsong"' },
+            { text: '', value: '' },
+            ...fontFamilyOpts
         ]
     },
 }

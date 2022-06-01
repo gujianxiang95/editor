@@ -56,7 +56,6 @@ const EditorState: Module<EditProps, RootProps> = {
                 updateComponent.props[key as keyof TextComponentProps] = value
             }
         },
-
     }
 }
 

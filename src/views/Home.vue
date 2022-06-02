@@ -8,7 +8,7 @@
     <h3>demo</h3>
     <ul>
       <li><router-link to="/editor">编辑网站</router-link></li>
-      <li><router-link to="/editor">编辑后展示</router-link></li>
+      <li><router-link to="/components/upload">上传图片</router-link></li>
       <!-- <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li> -->
       <!-- <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router" target="_blank" rel="noopener">router</a></li>
       <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex" target="_blank" rel="noopener">vuex</a></li>

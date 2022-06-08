@@ -1,5 +1,5 @@
 <template>
-    <component :is="tag" :style="styleProps" class="l-text-component pointer" @click="handleCLick">
+    <component :is="tag" :style="styleProps" class="l-text-component pointer" @click="handleClick">
         {{ text }}
     </component>
 </template>
@@ -22,12 +22,12 @@ export default defineComponent({
         }
     },
     setup (props) {
-        const { styleProps, handleCLick } = useComponentsCommon(props, textStylePropsNames)
-        // console.log('styleProps', styleProps)
+        const { styleProps, handleClick } = useComponentsCommon(props, textStylePropsNames)
         return {
             styleProps,
-            handleCLick
+            handleClick
         }
     }
 })
+
 </script>

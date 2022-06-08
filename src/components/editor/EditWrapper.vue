@@ -27,4 +27,7 @@ export default defineComponent({
 </script>
 
 <style>
+.edit-wrapper:hover {
+    border: 1px solid #ff0000;
+}
 </style>

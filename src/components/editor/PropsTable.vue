@@ -8,12 +8,13 @@
       <span class="label" v-if="value.text">{{value.text}}</span>
       <div class="prop-component">
         <component
+          :showCropperBtn='true'
           :is="value.component" 
           :[value.valueProp]="value.value" 
-          v-bind="value.extraProps"
+          v-bind="value"
           v-on="value.events"
         >
-          <template v-if="value.options">
+          <template v-if="value.options"> 
             <component
               :is="value.subComponent"
               v-for="(option, k) in value.options" :key="k"
@@ -30,11 +31,11 @@
 </template>
 
 <script lang="ts">
-import { TextComponentProps } from '@/store/defaultProps'
+import { TextComponentProps, ImageComponentProps } from '@/store/defaultProps'
 import { reduce, values } from 'lodash'
 import { computed, defineComponent, PropType, ref, VNode } from 'vue'
-
-import { mapPropsToFroms } from '@/components/editor/propsMap/index'
+import UpLoader from '@/views/Editor/components/uploader.vue'
+import { mapPropsToFroms, ImgMapPropsToFroms } from '@/components/editor/propsMap/index'
 import RenderVnode from '@/components/RenderVnode'
 interface FormProps {
     component: string;
@@ -48,6 +49,7 @@ interface FormProps {
     valueProp?: string; 
     eventName?: string; // 事件名
     value?: string;
+    src?: string;
     // initalTransform?: (val: any)=>any; // 初始化参数
     events?: { [key: string]: any }; 
 }
@@ -60,20 +62,22 @@ export default defineComponent({
         }
     },
     components: {
+      UpLoader,
       RenderVnode
     },
     emits: ['change'],
     setup (props, context) {
         const finalProps = computed(()=>{
             return reduce(props.props, (res, value, key)=>{
-                // console.log('key', key)
-                let newKey = key as keyof TextComponentProps
-                const item  = mapPropsToFroms[newKey]
+                let textKey = key as keyof TextComponentProps;
+                let imgKey = key as keyof ImageComponentProps;
+                const item  = mapPropsToFroms[textKey] || ImgMapPropsToFroms[imgKey]
                 if(item){
-                    const { valueProp = 'value', 
-                        eventName = 'change',
-                        initalTransform,
-                        afterTransform
+                    const { 
+                      valueProp = 'value', 
+                      eventName = 'change',
+                      initalTransform,
+                      afterTransform
                     } = item
                     const newItem: FormProps = {
                         ...item,
@@ -81,10 +85,14 @@ export default defineComponent({
                         valueProp,
                         eventName,
                         events: {
-                            [eventName]: (e: any)=>{context.emit('change',{key, value: afterTransform? afterTransform(e): e})}
+                            [eventName]: (e: any)=>{
+                              context.emit('change', {key, value: afterTransform? afterTransform(e): e})}
                         }
                     }
-                    res[newKey] = newItem
+                    // if(){
+                    //   newItem.src = 
+                    // }
+                    res[textKey] = newItem
                 }
                 return res
             }, {} as {[key: string]: FormProps})
@@ -105,7 +113,7 @@ export default defineComponent({
     align-items: center;
 }
 .label {
-    width: 20%;
+    width: 30%;
 }
 .prop-component {
     width: 70%

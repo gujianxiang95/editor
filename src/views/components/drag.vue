@@ -1,136 +1,67 @@
 <template>
-    <div class="upload">
-        <pre>
-            被拖放元素dragstart 被拖放元素drag
-
-            被拖放元素dragenter 被拖放元素dragover 被拖放元素dragleave
-            
-            被拖放元素dragend
-
-            容器dragenter 容器dragover 容器dragleave
-        </pre>
-        <input type="file" ref="fileInput" class="none" @change="handleFileChange" name="file">
-        <button type="submit" class="dragover" 
-            @dragover="dragover" 
-            @dragenter="dragenter" 
-            @dragleave="dragleave" 
-        @click="triggerUpload">拖拽上传</button>
-        <div class="container"
-            draggable='true'
-            @drop="containerDrop" 
+    <div class="drag">
+        <span>
+            水调歌头·黄州快哉亭赠张偓佺
+        </span>
+        <div ref="container" class="container" id="container"
+            @drop="drop" 
             @dragover="dragover" 
             @dragenter="dragenter" 
             @dragleave="dragleave" 
         >
-            容器
         </div>
-        <button 
-            draggable='true'
-        >被拖放元素</button>
-        <dd v-for="file in uploadedFiles" alt="图片预览" :key="file.uid">{{ file.name }}</dd>
-        <br>
-        <img :src="imgsrc" class="preview-img" alt="">
+        <pre ref="content" id="text" @dragstart="dragstart" class="pointer"
+            draggable='true'>
+落日绣帘卷，亭下水连空。知君为我新作，窗户湿青红。长记平山堂上，欹枕江南烟雨，杳杳没孤鸿。认得醉翁语，山色有无中。
+一千顷，都镜净，倒碧峰。忽然浪起，掀舞一叶白头翁。堪笑兰台公子，未解庄生天籁，刚道有雌雄。一点浩然气，千里快哉风。
+        </pre>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-// import { hasArray } from '@/utils/utils'
-export interface UploadFile {
-    uid: string;
-    size: number;
-    name: string;
-    raw: File
-}
 export default defineComponent({
-    name: 'upload',
-    setup() {
-        // 列表展示数组
-        const uploadedFiles = ref<UploadFile[]>([])
-        // 文件input的ref
-        const fileInput = ref<HTMLInputElement | null>(null)
-        // 点击上传按钮时 触发 input点击事件
-        const triggerUpload = ()=>{
-            if( fileInput.value ){
-                fileInput.value.click()
-            }
-        }
-        // 预览图片
-        const imgsrc = ref('')
-        const handleFileChange = (e: any)=>{
-            const target = e.target as HTMLInputElement
-            const files = target.files as FileList
-            handImgFile(files)
-        }
-        const handImgFile = (files: FileList)=>{
-            if( files ){
-                const uploadFile =  files[0]
-                let fileReader = new FileReader()
-                fileReader.readAsDataURL(uploadFile)
-                fileReader.onload = (e)=>{
-
-                    if(e.target?.result){
-                        console.log('e', e.target.result)
-
-                        imgsrc.value = e.target.result as string
-                        console.log('imgsrc.value', imgsrc)
-                    }
-                }
-                uploadedFiles.value.push({
-                    uid: uploadedFiles.value.length + '1',
-                    size: uploadFile.size,
-                    name: uploadFile.name,
-                    raw: uploadFile
-                })
-                return imgsrc.value
-                // console.log(uploadFile)
-            }
-        }
-        const drop = (e: DragEvent)=>{
-            console.log('drop', e)
-            e.stopPropagation();
-            e.preventDefault();
-            handImgFile(e.dataTransfer!.files)
-        }
+    name: 'drag',
+    setup(props, context) {
+        const container = ref<HTMLElement | null>(null)
+        const content = ref<HTMLElement | null>(null)
         const dragover = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
+        const dragstart = (e: DragEvent)=>{
+            const target =  e.target as HTMLElement
+            e.dataTransfer!.setData('container', target.id)
+        }
         const dragenter = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
         const dragleave = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
+        const drop = (e: DragEvent) => {
+            const id = e.dataTransfer!.getData('container')
+            const target =  e.target as HTMLElement
+            target.appendChild(document.getElementById(id) as Node)
+            // target!.appendChild(document.getElementById(id))
+        }
         return {
+            container,
+            content,
+            drop,
             dragleave,
+            dragstart,
             dragover,
             dragenter,
-            drop,
-            uploadedFiles,
-            fileInput,
-            imgsrc,
-            triggerUpload,
-            handleFileChange
         }
     },
 })
 </script>
 
-
 <style lang="scss" scoped>
-.preview-img {
-    width: 200px;
-}
-.dragover {
-    width: 100px;
-    height: 100px;
-}
 .container{
-    width: 200px;
-    height: 200px;
-    border: 1px solid red;
+    width: 500px;
+    height: 400px;
+    margin: 0 auto;
+    border: 1px solid blue;
 }
 </style>

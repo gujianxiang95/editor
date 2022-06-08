@@ -34,14 +34,14 @@ const EditorState: Module<EditProps, RootProps> = {
     },
     mutations: {
         // 新增 el
-        addComponent(state, props: Partial<TextComponentProps>){
-            const newComponent: ComponentData = {
-                id: (state.components.length + 1 ) +'',
-                name: 'l-text',
-                props
-            }
+        addComponent(state, component: ComponentData){
+            // const newComponent: ComponentData = {
+            //     id: (state.components.length + 1 ) +'',
+            //     name: 'l-text',
+            //     props
+            // }
             // console.log('newComponent', newComponent)
-            state.components.push(newComponent)
+            state.components.push(component)
         },
         // 选中当前el id
         setActive(state, currentId: string){

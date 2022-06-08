@@ -1,4 +1,4 @@
-import { TextComponentProps } from "@/store/defaultProps";
+import { TextComponentProps, ImageComponentProps } from "@/store/defaultProps";
 import { h, VNode } from "vue";
 export interface ProptoFrom {
     component: string;
@@ -11,16 +11,18 @@ export interface ProptoFrom {
     }[];
     valueProp?: string; 
     eventName?: string; // 事件名
-
+    src?: string;
     // value?: string;
     afterTransform?: (v: any) => any
     initalTransform?: (val: any)=>any; // 初始化参数
     // events?: { [key: string]: any }; 
 }
 export type PropToFroms = {
-    [P in keyof TextComponentProps]?: ProptoFrom
+    [P in keyof TextComponentProps]?: ProptoFrom;
 }
-
+export type ImgPropToFroms = {
+    [P in keyof ImageComponentProps]?: ProptoFrom;
+}
 const fontFamilyArr = [
     { text: '宋体', value: '"SimSun","STSong"' },
     { text: '黑体', value: '"SimHei","STHeiti"' },
@@ -34,6 +36,26 @@ const fontFamilyOpts = fontFamilyArr.map(font=>{
         // text: <span style={{fontFamily : font.value}} >font.text</span> as VNode
     }
 })
+export const ImgMapPropsToFroms: ImgPropToFroms = {
+    width: {
+        text: '宽度(px)',
+        component: 'a-input-number',
+        initalTransform: (v: string) => parseInt(v),
+        afterTransform: (e: number) => e ? `${e}px` : ''
+    },
+    height: {
+        text: '高度(px)',
+        component: 'a-input-number',
+        initalTransform: (v: string) => parseInt(v),
+        afterTransform: (e: number) => e ? `${e}px` : ''
+    },
+    src: {
+        text: '重选图片',
+        component: 'up-loader',
+        afterTransform:  (e: {src: string}) => e.src
+    }
+}
+
 export const mapPropsToFroms: PropToFroms = {
     text: {
         text: '文本',

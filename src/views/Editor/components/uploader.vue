@@ -1,29 +1,20 @@
 <template>
     <div class="upload">
-        <pre>
-            被拖放元素dragstart 被拖放元素drag
-
-            被拖放元素dragenter 被拖放元素dragover 被拖放元素dragleave
-            
-            被拖放元素dragend 被拖放元素drop
-
-            容器dragenter 容器dragover 容器dragleave 容器drop
-        </pre>
         <input type="file" ref="fileInput" class="none" @change="handleFileChange" name="file">
         <button type="submit" class="dragover" 
-            @drop="drop" 
+            @drop="drop"
             @dragover="dragover" 
             @dragenter="dragenter" 
             @dragleave="dragleave" 
-        @click="triggerUpload">拖拽上传</button>
-        <dd v-for="file in uploadedFiles" alt="图片预览" :key="file.uid">{{ file.name }}</dd>
-        <br>
-        <img :src="imgsrc" class="preview-img" alt="">
+            @click="triggerUpload">拖拽上传</button>
+        <!-- <dd v-for="file in uploadedFiles" alt="图片预览" :key="file.uid">{{ file.name }}</dd> -->
+        <cropper-btn :imgsrc="imgsrc" v-if="showCropperBtn" @change="handleSrcChange"></cropper-btn>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import CropperBtn from "@/views/Editor/components/cropperBtn.vue"
 // import { hasArray } from '@/utils/utils'
 export interface UploadFile {
     uid: string;
@@ -33,7 +24,24 @@ export interface UploadFile {
 }
 export default defineComponent({
     name: 'upload',
-    setup() {
+    emits: ['success', 'change'],
+    components: {
+        CropperBtn
+    },
+    props: {
+        showCropperBtn: {
+            type: Boolean,
+            default: false
+        },
+        value:{
+            type: String,
+            default: ''
+        }
+    },
+    setup(props, { emit }) {
+        const handleSrcChange = (src: string)=>{
+            emit('change', {src})
+        }
         // 列表展示数组
         const uploadedFiles = ref<UploadFile[]>([])
         // 文件input的ref
@@ -45,7 +53,7 @@ export default defineComponent({
             }
         }
         // 预览图片
-        const imgsrc = ref('')
+        const imgsrc = ref(props.value)
         const handleFileChange = (e: any)=>{
             const target = e.target as HTMLInputElement
             const files = target.files as FileList
@@ -57,21 +65,30 @@ export default defineComponent({
                 let fileReader = new FileReader()
                 fileReader.readAsDataURL(uploadFile)
                 fileReader.onload = (e)=>{
-
                     if(e.target?.result){
-                        console.log('e', e.target.result)
-
+                        // console.log('e', e.target.result)
                         imgsrc.value = e.target.result as string
-                        console.log('imgsrc.value', imgsrc)
+                        emit('success', {
+                            uid: uploadedFiles.value.length + '1',
+                            size: uploadFile.size,
+                            name: uploadFile.name,
+                            raw: uploadFile,
+                            src: imgsrc.value
+                        })
+                        emit('change', {
+                            src: imgsrc.value
+                        })
+                        uploadedFiles.value.push({
+                            uid: uploadedFiles.value.length + '1',
+                            size: uploadFile.size,
+                            name: uploadFile.name,
+                            raw: uploadFile
+                        })
+                        return imgsrc.value
+                        // console.log('imgsrc.value', imgsrc)
                     }
                 }
-                uploadedFiles.value.push({
-                    uid: uploadedFiles.value.length + '1',
-                    size: uploadFile.size,
-                    name: uploadFile.name,
-                    raw: uploadFile
-                })
-                return imgsrc.value
+                
                 // console.log(uploadFile)
             }
         }
@@ -102,7 +119,8 @@ export default defineComponent({
             fileInput,
             imgsrc,
             triggerUpload,
-            handleFileChange
+            handleFileChange,
+            handleSrcChange
         }
     },
 })
@@ -115,11 +133,9 @@ export default defineComponent({
 }
 .dragover {
     width: 100px;
-    height: 100px;
-}
-.container{
-    width: 200px;
-    height: 200px;
-    border: 1px solid red;
+    height: 30px;
+    border: none;
+    background-color: rgb(24, 144, 255);
+    color: #fff;
 }
 </style>

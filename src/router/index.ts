@@ -7,6 +7,7 @@ import Home from '../views/Home.vue'
 const components =  ()=> import('../views/components/index.vue')
 // ### 上传
 const Upload = ()=> import('../views/components/upload.vue')
+const Drag = ()=> import('../views/components/drag.vue')
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -39,6 +40,15 @@ const routes: Array<RouteRecordRaw> = [
         path: 'upload',
         name: 'upload',
         component: Upload,
+        meta: {
+          // requireAuth: true,
+          whiteHeader: true
+        }
+      },
+      {
+        path: 'drag',
+        name: 'drag',
+        component: Drag,
         meta: {
           // requireAuth: true,
           whiteHeader: true

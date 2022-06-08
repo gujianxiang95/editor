@@ -20,7 +20,7 @@
           :key="component.id"
           :id="component.id"
         >
-          <component 
+          <component
             :is="component.name"
             v-bind="component.props"></component>
         </edit-wrapper>
@@ -37,6 +37,7 @@
       </pre>
       <!-- <component  v-if="currentElement" :is="currentElement.name" v-bind="currentElement.props"></component> -->
     </a-layout-sider>
+    <!-- 对话框 -->
   </div>
 </template>
 <script lang="ts">
@@ -45,27 +46,35 @@ import { useStore } from "vuex";
 import { RootProps } from "@/store/index";
 import { ComponentData } from "@/store/editor";
 
+// 画布中需要的自定义组件
 import LText from "@/components/editor/LText.vue"
+import LImage from "@/components/editor/LImage.vue"
+
 import ComponentsList from "@/components/editor/ComponentsList.vue";
 import EditWrapper from "@/components/editor/EditWrapper.vue";
 import propsTable from '@/components/editor/PropsTable.vue'
+
 // 假数据
 import { defaultTextTemplates } from "@/mock/defaultTemplates";
 import { TextComponentProps } from "@/store/defaultProps";
 // import { useRoute } from 'vue-router'
 // import { useStore } from 'vuex'
+
+
 export default defineComponent({
   name: "Editor",
   components: {
+    LImage,
     LText,
     ComponentsList,
     EditWrapper,
-    propsTable
+    propsTable,
   },
-  setup() {
+  setup(props, { emit }) {
     const store = useStore<RootProps>();
     const components = computed(() => store.state.EditorState.components);
     const currentElement = computed<ComponentData  | null>(() => store.getters.getCurrentElement)
+    // console.log('currentElement', currentElement)
     const setActive = (id: string) => {
       store.commit("setActive", id);
     };
@@ -73,17 +82,15 @@ export default defineComponent({
       store.commit("addComponent", props);
     };
     const handlechange = (e: any)=>{
-      console.log('e', e)
       store.commit('updateComponent', e)
-    }
+    }   
     return {
-      components,
-      addItem,
-      defaultTextTemplates,
-      setActive,
-      currentElement,
-      handlechange
-
+      components, // 添加的el列表
+      addItem, // 添加el
+      defaultTextTemplates, // 默认的属性值
+      setActive, // 设置store的当前el
+      currentElement, // 选中的当前el
+      handlechange, // 改变值
     };
   },
 });
@@ -118,5 +125,9 @@ export default defineComponent({
     border: 1px solid #efefef;
     background: #fff;
   }
+}
+#cropper-img {
+  display: block;
+  max-width: 100%;
 }
 </style>

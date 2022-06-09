@@ -6,7 +6,7 @@
             @dragover="dragover" 
             @dragenter="dragenter" 
             @dragleave="dragleave" 
-            @click="triggerUpload">拖拽上传</button>
+            @click="triggerUpload"><upload-outlined /> 上传图片 </button>
         <!-- <dd v-for="file in uploadedFiles" alt="图片预览" :key="file.uid">{{ file.name }}</dd> -->
         <cropper-btn :imgsrc="imgsrc" v-if="showCropperBtn" @change="handleSrcChange"></cropper-btn>
     </div>
@@ -15,6 +15,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import CropperBtn from "@/views/Editor/components/cropperBtn.vue"
+import { UploadOutlined } from '@ant-design/icons-vue'
 // import { hasArray } from '@/utils/utils'
 export interface UploadFile {
     uid: string;
@@ -26,7 +27,8 @@ export default defineComponent({
     name: 'upload',
     emits: ['success', 'change'],
     components: {
-        CropperBtn
+        CropperBtn,
+        UploadOutlined
     },
     props: {
         showCropperBtn: {

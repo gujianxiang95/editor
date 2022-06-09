@@ -11,7 +11,10 @@ export interface ComponentData {
         [key: string]: any
     }
     id: string;
-    name: string
+    name: string;
+    isHidden?: boolean;
+    isLocked?: boolean;
+    layerName?: string;
 }
 
 export const testComponents: ComponentData[] = [
@@ -48,12 +51,18 @@ const EditorState: Module<EditProps, RootProps> = {
             state.currentElement = currentId
         },
         // 更新元素
-        updateComponent(state, {key, value }) {
+        updateComponent(state, {key, value, id, isRoot }) {
             const updateComponent = state.components.find(item=>{
-                return item.id === state.currentElement
+                return item.id === ( id || state.currentElement )
             })
             if( updateComponent ){
-                updateComponent.props[key as keyof TextComponentProps] = value
+                if(isRoot){
+                    // ComponentData有布尔值时，报错，应是尚未修复不过
+                    // updateComponent[key as keyof ComponentData] = value
+                    (updateComponent as any)[key] = value
+                }else {
+                    updateComponent.props[key as keyof TextComponentProps] = value
+                }
             }
         },
     }

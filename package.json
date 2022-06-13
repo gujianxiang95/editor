@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^3.2.3",
+    "array-move": "^4.0.0",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.12",
     "lodash": "^4.17.21",

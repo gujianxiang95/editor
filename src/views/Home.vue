@@ -37,12 +37,7 @@ export default defineComponent({
     msg: String,
   },
   setup(){
-    const change = (val: any)=>{
-      console.log('val', val)
-    }
-    return {
-      change
-    }
+    return {}
   }
 });
 </script>

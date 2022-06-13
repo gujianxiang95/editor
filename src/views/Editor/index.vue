@@ -42,13 +42,13 @@
           <div v-else>
             <a-empty>
               <template #description>
-                <p>该图层被锁定，暂时无法编辑</p>
+                <p>该楼层被锁定，暂时无法编辑</p>
               </template>
             </a-empty>
           </div>
         </a-tab-pane>
-        <a-tab-pane key="layer" tab="图层设置" force-render>
-            <layer-list :selecetedId="currentElement && currentElement.id" @select="setActive" :list="components" @change="handlechange"></layer-list>
+        <a-tab-pane key="layer" tab="楼层设置" force-render>
+            <layer-list @changeList="changeElList" :selecetedId="currentElement && currentElement.id" @select="setActive" :list="components" @change="handlechange"></layer-list>
         </a-tab-pane>
         <a-tab-pane key="3" tab="Tab 3">Content of Tab Pane 3</a-tab-pane>
       </a-tabs>
@@ -72,8 +72,9 @@ import LImage from "@/components/editor/LImage.vue"
 
 // 右侧属性设置 组件
 import propsTable from '@/components/editor/PropsTable.vue'
-// 右侧图层 组件
+// 右侧楼层 组件
 import layerList from '@/views/Editor/components/layerList.vue'
+
 
 // 假数据
 import { defaultTextTemplates } from "@/mock/defaultTemplates";
@@ -87,7 +88,7 @@ export default defineComponent({
     ComponentsList,
     EditWrapper,
     propsTable,
-    layerList
+    layerList,
   },
   setup(props, { emit }) {
     const activeKey = ref<string>('attr')
@@ -95,9 +96,7 @@ export default defineComponent({
     const components = computed(() => store.state.EditorState.components)
     // const components = computed(() => store.state.EditorState.components.filter(item=>!item.isHidden));
     const currentElement = computed<ComponentData  | null>(() => store.getters.getCurrentElement)
-    // console.log('currentElement', currentElement)
     const setActive = (id: string) => {
-      console.log('id', id)
       store.commit("setActive", id);
     };
     const addItem = (props: Partial<TextComponentProps>) => {
@@ -106,7 +105,11 @@ export default defineComponent({
     const handlechange = (e: any)=>{
       store.commit('updateComponent', e)
     }   
+    const changeElList = ()=>{
+      console.log('123')
+    }
     return {
+      changeElList, 
       components, // 添加的el列表
       addItem, // 添加el
       defaultTextTemplates, // 默认的属性值

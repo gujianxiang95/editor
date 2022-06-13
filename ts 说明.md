@@ -1441,9 +1441,11 @@ const Component = defineComponent({
 })
 ```
 
-
 ## Partial
 Partial<T> 可以快速把某个接口类型中定义的属性变成可选的(Optional)：
 
 ## !.
 !.非空断言操作符（non-null assertion operator），和?.相反，这个符号表示对象后面的属性一定不是null或undefined。
+
+##
+// TODO 类型“EventTarget”的参数不能赋给类型“Node”的参数。

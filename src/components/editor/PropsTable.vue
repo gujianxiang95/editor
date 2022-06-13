@@ -97,8 +97,6 @@ export default defineComponent({
                 return res
             }, {} as {[key: string]: FormProps})
         })
-        // console.log('props', props)
-        // console.log('finalProps', finalProps)
         return {
             finalProps
         }

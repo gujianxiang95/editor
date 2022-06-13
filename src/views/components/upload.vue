@@ -59,10 +59,7 @@ export default defineComponent({
                 fileReader.onload = (e)=>{
 
                     if(e.target?.result){
-                        console.log('e', e.target.result)
-
                         imgsrc.value = e.target.result as string
-                        console.log('imgsrc.value', imgsrc)
                     }
                 }
                 uploadedFiles.value.push({
@@ -72,25 +69,20 @@ export default defineComponent({
                     raw: uploadFile
                 })
                 return imgsrc.value
-                // console.log(uploadFile)
             }
         }
         const drop = (e: DragEvent)=>{
-            console.log('drop', e)
             e.stopPropagation();
             e.preventDefault();
             handImgFile(e.dataTransfer!.files)
         }
         const dragover = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
         const dragenter = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
         const dragleave = (e: Event)=>{
-            // console.log('e', e)
             e.preventDefault()
         }
         return {

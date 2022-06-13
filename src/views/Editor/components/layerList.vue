@@ -1,12 +1,15 @@
 <template>
     <ul
         class="ant-list-items ant-list-bordered"
-        @dragenter="cancelBubble"
-        @dragover="cancelBubble"
-        @drop="onUlDrop($event)"
     >
-        <!-- ul  -->
-        <li class="ant-list-item"
+        <!-- 
+         <ul
+                class="ant-list-items ant-list-bordered"
+                @dragenter="cancelBubble"
+                @dragover="cancelBubble"
+                @drop="onUlDrop($event)"
+            >    
+            <li class="ant-list-item"
             v-for="(item, index) in list"
             :key="item.id"
             :class="{ active: item.id === selecetedId, ghost: dragData.currentDragging === item.id  }"
@@ -16,32 +19,49 @@
             @dragenter="onDragEnter($event, index)"
             @dragover="cancelBubble"
             draggable="true"
-        >
-            <!-- @drop="onDrop($event, index)" -->
-            <a-tooltip :title="item.isHidden? '显示': '隐藏'">
-                <a-button shape="circle" @click="handleChange(item.id, 'isHidden' ,!item.isHidden)">
-                    <template v-slot:icon v-if="item.isHidden"> <eye-outlined /> </template>
-                    <template v-slot:icon v-else> <eye-invisible-outlined /> </template>
-                </a-button>
-            </a-tooltip>
-            <a-tooltip :title="item.isLocked? '解锁': '锁定'">
-                <a-button shape="circle" @click="handleChange(item.id, 'isLocked' ,!item.isLocked)">
-                    <template v-slot:icon v-if="item.isLocked"> <unlock-outlined /> </template>
-                    <template v-slot:icon v-else> <lock-outlined /> </template>
-                </a-button>
-            </a-tooltip>
-            <inline-edit :value="item.layerName" @change="(val)=>handleChange(item.id, 'layerName' , val)"></inline-edit>
-            <span>{{item.layerName}}</span>
-        </li>
+        > -->
+        <draggbale class="dragArea list-group w-full" :list='list' handle=".handle">
+            <li class="ant-list-item"
+                v-for="(item, index) in list"
+                :key="item.id"
+                :class="{ active: item.id === selecetedId, ghost: dragData.currentDragging === item.id  }"
+                :data-index="index"
+                @click="handleClick(item.id)"
+                draggable="true"
+            >
+                <!-- @drop="onDrop($event, index)" -->
+                <a-tooltip :title="item.isHidden? '显示': '隐藏'">
+                    <a-button shape="circle" @click="handleChange(item.id, 'isHidden' ,!item.isHidden)">
+                        <template v-slot:icon v-if="item.isHidden"> <eye-outlined /> </template>
+                        <template v-slot:icon v-else> <eye-invisible-outlined /> </template>
+                    </a-button>
+                </a-tooltip>
+                <a-tooltip :title="item.isLocked? '解锁': '锁定'">
+                    <a-button shape="circle" @click="handleChange(item.id, 'isLocked' ,!item.isLocked)">
+                        <template v-slot:icon v-if="item.isLocked"> <unlock-outlined /> </template>
+                        <template v-slot:icon v-else> <lock-outlined /> </template>
+                    </a-button>
+                </a-tooltip>
+                <inline-edit :value="item.layerName" @change="(val)=>handleChange(item.id, 'layerName' , val)"></inline-edit>
+                <!-- <span>{{item.layerName}}</span> -->
+                <a-tooltip title="拖动排序" >
+                    <a-button shape="circle" class="handle">
+                        <template v-slot:icon><DragOutlined></DragOutlined> </template>
+                    </a-button>
+                </a-tooltip>
+            </li>
+        </draggbale>
     </ul>
 </template>
 
 <script lang="ts">
 import InlineEdit from '@/views/Editor/components/inlineEdit.vue'
 import { defineComponent, PropType, reactive } from 'vue'
-import { EyeInvisibleOutlined, EyeOutlined, UnlockOutlined, LockOutlined } from '@ant-design/icons-vue'
+import { EyeInvisibleOutlined, EyeOutlined, UnlockOutlined, LockOutlined, DragOutlined } from '@ant-design/icons-vue'
 import { ComponentData } from '@/store/editor'
-import { arrayMoveMutable } from 'array-move'
+import { arrayMoveMutable } from 'array-move' // 移动数组插件
+
+import { VueDraggableNext } from "vue-draggable-next";
 
 const getParentElement = (element: HTMLElement, className: string)=>{
     while(element) {
@@ -59,7 +79,9 @@ export default defineComponent({
         EyeOutlined,
         UnlockOutlined,
         LockOutlined,
-        InlineEdit
+        DragOutlined,
+        InlineEdit,
+        draggbale: VueDraggableNext, // 拖动插件
     },
     props: {
         list: {
@@ -132,7 +154,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style lang='scss' scoped>
 .active {
     border: 1px blue solid;
 }
@@ -141,5 +163,8 @@ export default defineComponent({
 }
 .ghost {
     opacity: 0.5;
+}
+.handle {
+    cursor: move;
 }
 </style>

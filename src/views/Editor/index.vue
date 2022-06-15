@@ -9,17 +9,19 @@
     </a-layout-sider>
     <a-layout class="preview-container">
       <!-- <p>画布区域</p> -->
-      <div class="preview-list" id="canvas-area">
+      <div class="preview-list" id="canvas-area" :style="page.props">
         <!-- <l-text v-for="component in components"
           :key="component.id"
           :is="component.name"
           v-bind="component.props"></l-text> -->
         <edit-wrapper
+          @upadte-position="upadtePosition"
           @setActive="setActive"
           v-show="!component.isHidden"
           v-for="component in components"
           :key="component.id"
           :id="component.id"
+          :props="component.props"
           :class="{active: currentElement && component.id === currentElement.id}"
         >
           <component
@@ -31,10 +33,17 @@
     <a-layout-sider class="right" width="300px"> 
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="attr" tab="属性设置">
-          <div v-if="currentElement && currentElement.props">
-            <props-table v-if="!currentElement.isLocked" @change="handlechange" 
+          <div v-if="currentElement && currentElement.props" >
+            <!-- <props-table 
+              v-if="!currentElement.isLocked" 
+              @change="handlechange" 
               :props="currentElement.props"
-            ></props-table>
+            ></props-table> -->
+            <edit-group 
+              v-if="!currentElement.isLocked" 
+              @change="handlechange" 
+              :props="currentElement.props"
+            ></edit-group>
             <pre>
               {{ currentElement && currentElement.props }}
             </pre>
@@ -50,7 +59,9 @@
         <a-tab-pane key="layer" tab="楼层设置" force-render>
             <layer-list @changeList="changeElList" :selecetedId="currentElement && currentElement.id" @select="setActive" :list="components" @change="handlechange"></layer-list>
         </a-tab-pane>
-        <a-tab-pane key="3" tab="Tab 3">Content of Tab Pane 3</a-tab-pane>
+        <a-tab-pane key="page-setting" tab="页面设置">
+          <props-table :props="page.props"></props-table>
+        </a-tab-pane>
       </a-tabs>
       <!-- <component  v-if="currentElement" :is="currentElement.name" v-bind="currentElement.props"></component> -->
     </a-layout-sider>
@@ -66,6 +77,8 @@ import { ComponentData } from "@/store/editor";
 // 画布中组件
 import ComponentsList from "@/components/editor/ComponentsList.vue";
 import EditWrapper from "@/components/editor/EditWrapper.vue";
+import EditGroup from "@/components/editor/EditGroup.vue";
+
 // 画布中需要的自定义组件
 import LText from "@/components/editor/LText.vue"
 import LImage from "@/components/editor/LImage.vue"
@@ -75,11 +88,13 @@ import propsTable from '@/components/editor/PropsTable.vue'
 // 右侧楼层 组件
 import layerList from '@/views/Editor/components/layerList.vue'
 
-
 // 假数据
 import { defaultTextTemplates } from "@/mock/defaultTemplates";
 import { TextComponentProps } from "@/store/defaultProps";
 
+// TODO
+// 1、color-picker组件传值问题
+// 2、添加可移动组件 将临时传递到普通组件内部的样式去除
 export default defineComponent({
   name: "Editor",
   components: {
@@ -89,11 +104,14 @@ export default defineComponent({
     EditWrapper,
     propsTable,
     layerList,
+    EditGroup
   },
   setup(props, { emit }) {
     const activeKey = ref<string>('attr')
     const store = useStore<RootProps>();
     const components = computed(() => store.state.EditorState.components)
+    const page = computed(()=> store.state.EditorState.page)
+    // console.log('page',page)
     // const components = computed(() => store.state.EditorState.components.filter(item=>!item.isHidden));
     const currentElement = computed<ComponentData  | null>(() => store.getters.getCurrentElement)
     const setActive = (id: string) => {
@@ -108,6 +126,19 @@ export default defineComponent({
     const changeElList = ()=>{
       console.log('123')
     }
+    const upadtePosition = (data: {id: string, left:number, top: number})=>{
+      const {top, left, id} = data
+      store.commit('updateComponent', {
+        key: 'left',
+        value: `${left}px`,
+        id
+      })
+       store.commit('updateComponent', {
+        key: 'top',
+        value: `${top}px`,
+        id
+      })
+    }
     return {
       changeElList, 
       components, // 添加的el列表
@@ -117,6 +148,8 @@ export default defineComponent({
       currentElement, // 选中的当前el
       handlechange, // 改变值
       activeKey, // 右侧属性侧边栏值
+      page,
+      upadtePosition // 更新移动组件
     };
   },
 });

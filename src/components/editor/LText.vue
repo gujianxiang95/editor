@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { transformToComponentProps, textDefaultProps, textStylePropsNames } from '@/store/defaultProps'
-import { pick } from 'lodash'
 import { computed, defineComponent } from 'vue'
 import useComponentsCommon from '@/hooks/editor/useComponentsCommon'
 
@@ -22,6 +21,7 @@ export default defineComponent({
         }
     },
     setup (props) {
+        // console.log(defaultProps )
         const { styleProps, handleClick } = useComponentsCommon(props, textStylePropsNames)
         return {
             styleProps,

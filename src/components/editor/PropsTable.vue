@@ -11,7 +11,7 @@
           :showCropperBtn='true'
           :is="value.component" 
           :[value.valueProp]="value.value" 
-          v-bind="value"
+          v-bind="value.extraProps"
           v-on="value.events"
         >
           <template v-if="value.options"> 
@@ -37,6 +37,7 @@ import { computed, defineComponent, PropType, ref, VNode } from 'vue'
 import UpLoader from '@/views/Editor/components/uploader.vue'
 import { mapPropsToFroms, ImgMapPropsToFroms } from '@/components/editor/propsMap/index'
 import RenderVnode from '@/components/RenderVnode'
+import ColorPicker from '@/components/ColorPicker.vue'
 interface FormProps {
     component: string;
     subComponent?: string;
@@ -63,7 +64,8 @@ export default defineComponent({
     },
     components: {
       UpLoader,
-      RenderVnode
+      RenderVnode,
+      ColorPicker
     },
     emits: ['change'],
     setup (props, context) {

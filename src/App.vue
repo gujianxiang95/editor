@@ -55,6 +55,9 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   .header {
+    position: fixed;
+    top: 0px;
+    z-index: 1000;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -76,6 +79,7 @@ export default defineComponent({
   }
   .layout-content {
     min-height: calc(100vh - 64px);
+    padding-top: 64px;
     padding-bottom: 70px;
   }
   .page-title {

@@ -1,4 +1,4 @@
-import { TextComponentProps, ImageComponentProps } from "@/store/defaultProps";
+import { AllComponentProps, ImageComponentProps } from "@/store/defaultProps";
 import { h, VNode } from "vue";
 export interface ProptoFrom {
     component: string;
@@ -9,16 +9,16 @@ export interface ProptoFrom {
         text: string | VNode;
         value: any;
     }[];
-    valueProp?: string; 
+    valueProp?: string;
     eventName?: string; // 事件名
     src?: string;
-    // value?: string;
-    afterTransform?: (v: any) => any
-    initalTransform?: (val: any)=>any; // 初始化参数
+    
+    afterTransform?: (v: any) => any;
+    initalTransform?: (val: any) => any; // 初始化参数
     // events?: { [key: string]: any }; 
 }
 export type PropToFroms = {
-    [P in keyof TextComponentProps]?: ProptoFrom;
+    [P in keyof AllComponentProps]?: ProptoFrom;
 }
 export type ImgPropToFroms = {
     [P in keyof ImageComponentProps]?: ProptoFrom;
@@ -29,10 +29,10 @@ const fontFamilyArr = [
     { text: '楷体', value: '"KaiTi","STKaiti"' },
     { text: '仿宋', value: '"FangSong","STFangsong"' },
 ]
-const fontFamilyOpts = fontFamilyArr.map(font=>{
+const fontFamilyOpts = fontFamilyArr.map(font => {
     return {
         value: font.value,
-        text: h('span', {style: {fontFamily : font.value}}, font.text)
+        text: h('span', { style: { fontFamily: font.value } }, font.text)
         // text: <span style={{fontFamily : font.value}} >font.text</span> as VNode
     }
 })
@@ -52,10 +52,14 @@ export const ImgMapPropsToFroms: ImgPropToFroms = {
     src: {
         text: '重选图片',
         component: 'up-loader',
-        afterTransform:  (e: {src: string}) => e.src
+        afterTransform: (e: { src: string }) => e.src
     }
 }
-
+const pxToNumberHandler: ProptoFrom = {
+    component: 'a-input-number',
+    initalTransform: (v: string) => parseInt(v),
+    afterTransform: (e: number) => e ? `${e}px` : '',
+}
 export const mapPropsToFroms: PropToFroms = {
     text: {
         text: '文本',
@@ -98,4 +102,43 @@ export const mapPropsToFroms: PropToFroms = {
             ...fontFamilyOpts
         ]
     },
+    width: {
+        text: '宽度',
+        ...pxToNumberHandler
+    },
+    height: {
+        text: '高度',
+        ...pxToNumberHandler
+    },
+    color: {
+        component: 'color-picker',
+        text: '字体颜色'
+    },
+    backgroundColor: {
+        component: 'color-picker',
+        text: '背景颜色'
+    },
+    backgroundImage: {
+        component: 'a-input',
+        text: '背景图片'
+    },
+    position: {
+        text: '背景图片',
+        component: 'a-select',
+        subComponent: 'a-select-option',
+        options: [
+            { text: 'relative', value: 'relative' },
+            { text: 'absolute', value: 'absolute' },
+            { text: 'fixed', value: 'fixed' },
+        ]
+    },
+    top: {
+        text: 'top',
+        ...pxToNumberHandler,
+    },
+    left: {
+        text: 'left',
+        ...pxToNumberHandler,
+    },
+    
 }

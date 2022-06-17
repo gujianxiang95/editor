@@ -16,6 +16,7 @@
           v-bind="component.props"></l-text> -->
         <edit-wrapper
           @upadte-position="upadtePosition"
+          @upadte-size="upadteSize"
           @setActive="setActive"
           v-show="!component.isHidden"
           v-for="component in components"
@@ -92,6 +93,9 @@ import layerList from '@/views/Editor/components/layerList.vue'
 import { defaultTextTemplates } from "@/mock/defaultTemplates";
 import { TextComponentProps } from "@/store/defaultProps";
 
+// loadash方法
+import { pickBy, forEach  } from 'lodash'
+
 // TODO
 // 1、color-picker组件传值问题
 // 2、添加可移动组件 将临时传递到普通组件内部的样式去除
@@ -139,7 +143,31 @@ export default defineComponent({
         id
       })
     }
+    const upadteSize = (data: {id: string, width: number, height: number})=>{
+      const { id } = data
+      const UpdateData = pickBy(data, (val, key)=>{
+        return key !== 'id'
+      })
+      forEach(UpdateData, (val, key)=>{
+        store.commit('updateComponent', {
+          key,
+          value: `${val}px`,
+          id
+        })
+      } )
+      // store.commit('updateComponent', {
+      //   key: 'height',
+      //   value: `${height}px`,
+      //   id
+      // })
+      //  store.commit('updateComponent', {
+      //   key: 'width',
+      //   value: `${width}px`,
+      //   id
+      // })
+    }
     return {
+      upadteSize,
       changeElList, 
       components, // 添加的el列表
       addItem, // 添加el

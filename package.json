@@ -12,6 +12,7 @@
     "array-move": "^4.0.0",
     "core-js": "^3.6.5",
     "cropperjs": "^1.5.12",
+    "hotkeys-js": "^3.9.4",
     "lodash": "^4.17.21",
     "vue": "^3.0.0",
     "vue-draggable-next": "^2.1.1",

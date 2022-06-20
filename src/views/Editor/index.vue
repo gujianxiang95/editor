@@ -96,6 +96,7 @@ import { TextComponentProps } from "@/store/defaultProps";
 // loadash方法
 import { pickBy, forEach  } from 'lodash'
 
+import  initHorKeys from '@/plugins/hotkey'
 // TODO
 // 1、color-picker组件传值问题
 // 2、添加可移动组件 将临时传递到普通组件内部的样式去除
@@ -111,6 +112,8 @@ export default defineComponent({
     EditGroup
   },
   setup(props, { emit }) {
+    // 绑定快捷键
+    initHorKeys()
     const activeKey = ref<string>('attr')
     const store = useStore<RootProps>();
     const components = computed(() => store.state.EditorState.components)

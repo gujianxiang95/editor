@@ -1,10 +1,14 @@
 import { Module } from "vuex";
 import { TextComponentProps, textDefaultProps, imageDefaultProps } from "./defaultProps";
 import { RootProps } from "./index"
+import { message } from "ant-design-vue";
 export interface EditProps {
     components: ComponentData[];
     currentElement: string;  // 保存当前项目的一些信息
     page: PageData;
+    // 被复制的组件
+    copiedComponent?: ComponentData
+    exitLen: number
 }
 export interface PageData {
     props: { [key: string]: any };//
@@ -38,7 +42,8 @@ const EditorState: Module<EditProps, RootProps> = {
         page: {
             props: pageDefaultProps,
             title: 'testPage'
-        }
+        },
+        exitLen: 0
     },
     getters: {
         getCurrentElement: (state)=>{
@@ -55,6 +60,7 @@ const EditorState: Module<EditProps, RootProps> = {
             //     name: 'l-text',
             //     props
             // }
+            state.exitLen++
             state.components.push(component)
         },
         // 选中当前el id
@@ -76,6 +82,35 @@ const EditorState: Module<EditProps, RootProps> = {
                 }
             }
         },
+        // 拷贝元素
+        copyCompont(state, id) {
+            const currentComponent = state.components.find(item=>{
+                return item.id === id
+            })
+            if( currentComponent ){
+                state.copiedComponent = {
+                    ...currentComponent,
+                    id: `${++state.exitLen}`
+                }
+                message.success('已拷贝完成')
+            }
+        },
+        // 粘贴元素
+        pasteCopiedCompont(state ) {
+            if( state.copiedComponent ){
+                state.components.push(state.copiedComponent)
+                message.success('已粘贴完成')
+            }
+        },
+        delectCompont(state, id ) {
+            const currentComponent = state.components.find(item=>{
+                return item.id === id
+            })
+            if(currentComponent){
+                state.components = state.components.filter(item=>item.id!==id)
+                message.success('删除楼层成功')
+            }
+        }
     }
 }
 

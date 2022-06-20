@@ -32,7 +32,7 @@ export default defineComponent({
         const store = useStore<RootProps>()
         const onItemClick = (data:any)=>{
             const newComponent: ComponentData = {
-                id: (store.state.EditorState.components.length + 1 ) +'',
+                id: `${store.state.EditorState.exitLen+1}`,
                 name: 'l-text',
                 props: data
             }
@@ -43,7 +43,7 @@ export default defineComponent({
             img.src = props.src
             img.onload=()=>{
                 const newComponent: ComponentData = {
-                    id: (store.state.EditorState.components.length + 1 ) +'',
+                    id: `${store.state.EditorState.exitLen+1}`,
                     name: 'l-image',
                     props: {
                         ...imageDefaultProps,
